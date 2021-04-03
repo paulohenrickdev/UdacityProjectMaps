@@ -65,6 +65,12 @@ class ReminderListFragmentTest :
     @Test
     fun displayRemindersList() = runBlockingTest {
 
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        val navController = mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
         val list = listOf(
             ReminderDTO(
                 "title",
@@ -137,6 +143,13 @@ class ReminderListFragmentTest :
 
     @Test
     fun errorSnackBackShown() = runBlockingTest {
+
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        val navController = mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
         fakeDataSource.deleteAllReminders()
         // WHEN - Details fragment launched to display task
         onView(withText("No reminders found"))

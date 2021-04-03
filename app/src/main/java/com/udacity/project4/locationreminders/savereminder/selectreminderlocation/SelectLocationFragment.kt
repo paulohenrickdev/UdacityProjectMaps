@@ -39,8 +39,7 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
     private lateinit var map: GoogleMap
     private val REQUEST_LOCATION_PERMISSION = 1
 
-
-    var Poi : PointOfInterest? =null
+    var isMarker: Boolean = false
     var lat : Double = 0.0
     var long : Double = 0.0
     var title = ""
@@ -71,7 +70,7 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
 
 //        DONE: call this function after the user confirms on the selected location
         binding.saveLocation.setOnClickListener{
-            if(Poi!= null) {
+            if(isMarker) {
                 onLocationSelected()
             }else{
                 Toast.makeText(context,"Select a location !", Toast.LENGTH_LONG).show()
@@ -91,7 +90,6 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
     private fun onLocationSelected() {
         _viewModel.latitude.value = lat
         _viewModel.longitude.value = long
-        _viewModel.selectedPOI.value = Poi
         _viewModel.reminderSelectedLocationStr.value = title
         _viewModel.navigationCommand.postValue(NavigationCommand.Back)
     }
@@ -123,19 +121,18 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
 
 
     private fun setPoiClick(map: GoogleMap) {
-        map.setOnPoiClickListener { poi ->
-            val poiMarker = map.addMarker(
+        map.setOnMapClickListener { latLgn ->
+            val marker = map.addMarker(
                 MarkerOptions()
-                    .position(poi.latLng)
-                    .title(poi.name)
+                    .position(LatLng(latLgn.latitude, latLgn.longitude))
             )
             val zoomLevel = 15f
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(poi.latLng, zoomLevel))
-            poiMarker.showInfoWindow()
-            Poi = poi
-            lat= poi.latLng.latitude
-            long = poi.latLng.longitude
-            title = poi.name
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latLgn.latitude, latLgn.longitude), zoomLevel))
+            marker.showInfoWindow()
+            isMarker = true
+            lat= latLgn.latitude
+            long = latLgn.longitude
+            title = getString(R.string.dropped_pin)
         }
         isLocationSelected = true
     }
@@ -195,8 +192,8 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
             } else {
                 Snackbar.make(view!!, R.string.location_required_error, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok) {
-                    checkDeviceLocationSettings()
-                }.show()
+                        checkDeviceLocationSettings()
+                    }.show()
             }
 
         }

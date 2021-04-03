@@ -118,7 +118,7 @@ class RemindersLocalRepositoryTest {
     fun getReminderByIdThatDoesNotExistInLocalCache() = runBlockingTest {
         val message = (remindersLocalRepository.getReminder(list[0].id) as? Result.Error)?.message
         Assert.assertThat<String>(message, CoreMatchers.notNullValue())
-        assertThat(message).isEqualTo("Reminder does not exist !")
+        assertThat(message).isEqualTo("Reminder not found!")
     }
 
     @Test
