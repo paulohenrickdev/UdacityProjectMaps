@@ -71,7 +71,7 @@ class ReminderListFragmentTest :
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        val list = listOf(
+        val list = mutableListOf(
             ReminderDTO(
                 "title",
                 "description",
@@ -156,10 +156,7 @@ class ReminderListFragmentTest :
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
-    private fun position(
-        parentMatcher: Matcher<View>, position: Int
-    ): Matcher<View> {
-
+    private fun position(parentMatcher: Matcher<View>, position: Int): Matcher<View> {
         return object : TypeSafeMatcher<View>() {
             override fun describeTo(description: Description) {
                 description.appendText("Child at position $position in parent ")
@@ -168,8 +165,7 @@ class ReminderListFragmentTest :
 
             public override fun matchesSafely(view: View): Boolean {
                 val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
+                return parent is ViewGroup && parentMatcher.matches(parent) && view == parent.getChildAt(position)
             }
         }
     }

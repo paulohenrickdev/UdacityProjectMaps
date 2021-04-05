@@ -5,19 +5,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
-import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -155,14 +152,6 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
     }
 
 
-    private fun isPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context!!,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -212,7 +201,7 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
         } else {
             ActivityCompat.requestPermissions(
                 context as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
                 REQUEST_LOCATION_PERMISSION
             )
         }
@@ -243,9 +232,16 @@ class SelectLocationFragment : BaseFragment() , OnMapReadyCallback{
         }
     }
 
+    private fun isPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context!!,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
     companion object {
-        private const val REQUEST_CODE_BACKGROUND = 102929
-        private const val REQUEST_TURN_DEVICE_LOCATION_ON = 12433
+        private const val REQUEST_CODE_BACKGROUND = 1
+        private const val REQUEST_TURN_DEVICE_LOCATION_ON = 2
     }
 
 }

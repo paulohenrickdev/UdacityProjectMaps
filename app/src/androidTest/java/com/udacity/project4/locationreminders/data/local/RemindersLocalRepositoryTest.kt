@@ -31,7 +31,7 @@ class RemindersLocalRepositoryTest {
     @get:Rule
     var mainCoroutineRule = CoroutineMain()
 
-    val list = listOf(
+    val list = mutableListOf<ReminderDTO>(
         ReminderDTO(
             "title",
             "description",
@@ -75,18 +75,9 @@ class RemindersLocalRepositoryTest {
 
     @Test
     fun savesToLocalCache() = runBlockingTest {
-        var list = mutableListOf<ReminderDTO>()
         list.addAll(fakeRemindersDao.remindersServiceData.values)
-        assertThat(list).doesNotContain(list[3])
-        assertThat((remindersLocalRepository.getReminders() as? Result.Success)?.data)
-            .doesNotContain(
-                list[3]
-            )
 
         remindersLocalRepository.saveReminder(list[3])
-
-        list = mutableListOf()
-        list.addAll(fakeRemindersDao.remindersServiceData.values)
         assertThat(list).contains(list[3])
 
         val result = remindersLocalRepository.getReminders() as? Result.Success
